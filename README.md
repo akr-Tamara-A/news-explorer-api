@@ -2,7 +2,7 @@
 ***
 # NewsExplorer
 Сервис, в котором можно найти новости по запросу и сохранить в личном кабинете.</br>
-Ссылка на сервер: https://news-akr.students.nomoredomains.work
+Ссылка на сервер: https://api.news-akr.students.nomoredomains.work
 
 ***
 ***
