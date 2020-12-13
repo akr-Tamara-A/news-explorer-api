@@ -23,7 +23,15 @@ module.exports.createArticle = async (req, res, next) => {
       throw new BadRequestError('Невалидные данные');
     } else {
       await newArticle.save();
-      res.send(newArticle);
+      res.send({
+        keyword: newArticle.keyword,
+        title: newArticle.title,
+        text: newArticle.text,
+        date: newArticle.date,
+        source: newArticle.source,
+        image: newArticle.image,
+        link: newArticle.link,
+      });
     }
   } catch (err) {
     next(err);
@@ -33,21 +41,27 @@ module.exports.createArticle = async (req, res, next) => {
 /** Контролер удаления карточки */
 module.exports.deleteArticle = async (req, res, next) => {
   try {
-    const article = await Article.findById(req.params.articleId).populate('user');
+    const article = await Article.findById(req.params.articleId).select('+owner').populate('user');
     if (!article) {
       throw new NotFoundError('Такая карточка не существует');
     } else {
       const user = req.user._id;
 
       const articleOwner = JSON.stringify(article.owner).slice(1, -1);
-
+      // if (article.owner.equals(req.user._id)) {
       if (user !== articleOwner) {
         throw new ForbiddenError('Это чужая карточка');
       } else {
-        const articleForDel = await Article.findByIdAndRemove({
-          _id: req.params.articleId,
+        const articleForDel = await article.remove();
+        res.send({
+          keyword: articleForDel.keyword,
+          title: articleForDel.title,
+          text: articleForDel.text,
+          date: articleForDel.date,
+          source: articleForDel.source,
+          image: articleForDel.image,
+          link: articleForDel.link,
         });
-        res.send(articleForDel);
       }
     }
   } catch (err) {

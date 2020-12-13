@@ -6,12 +6,13 @@ const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
+const ConflictError = require('../errors/ConflictError');
 
 const { genereteToken } = require('../utils/genereteToken');
 
 /** Контролер создания нового пользователя */
 module.exports.createUser = async (req, res, next) => {
-  const { email, password, name } = req.body;
+  const { email, password } = req.body;
 
   try {
     if (!password) {
@@ -21,7 +22,6 @@ module.exports.createUser = async (req, res, next) => {
 
     const newUser = await new User({
       email,
-      name,
       password: hash,
     });
 
@@ -33,12 +33,15 @@ module.exports.createUser = async (req, res, next) => {
       await newUser.save();
       res.send({
         _id: newUser._id,
-        name: newUser.name,
         email: newUser.email,
       });
     }
   } catch (err) {
-    next(err);
+    if (err.code === 11000) {
+      next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
+    } else {
+      next(err);
+    }
   }
 };
 
@@ -47,7 +50,7 @@ module.exports.loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!isEmail(email)) {
-      throw new UnauthorizedError('Передан не верный логин или пароль');
+      throw new UnauthorizedError('Передан неверный логин или пароль');
     } else {
       const user = await User.findUserByCredentials(email, password);
       if (!user) {
