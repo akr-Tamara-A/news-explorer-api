@@ -1,10 +1,5 @@
 module.exports = (err, req, res, next) => {
-  let { statusCode = 500, message } = err;
-
-  if (err.errors && err.errors.email.properties.type === 'unique') {
-    statusCode = 409;
-    message = err.errors.email.message;
-  }
+  const { statusCode = 500, message } = err;
 
   res
     .status(statusCode)
@@ -13,5 +8,5 @@ module.exports = (err, req, res, next) => {
         ? 'На сервере произошла ошибка'
         : message,
     });
-  next();
+  return next();
 };
