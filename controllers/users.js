@@ -12,7 +12,7 @@ const { genereteToken } = require('../utils/genereteToken');
 
 /** Контролер создания нового пользователя */
 module.exports.createUser = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
 
   try {
     if (!password) {
@@ -22,6 +22,7 @@ module.exports.createUser = async (req, res, next) => {
 
     const newUser = await new User({
       email,
+      name,
       password: hash,
     });
 
@@ -34,6 +35,7 @@ module.exports.createUser = async (req, res, next) => {
       res.send({
         _id: newUser._id,
         email: newUser.email,
+        name: newUser.name,
       });
     }
   } catch (err) {
