@@ -6,7 +6,7 @@ const BadRequestError = require('../errors/BadRequestError');
 /** Контролер запроса всех карточек */
 module.exports.getArticles = async (req, res, next) => {
   try {
-    const articles = await Article.find({}).populate('user');
+    const articles = await Article.find({ owner: req.user._id }).populate('user');
     res.send(articles);
   } catch (err) {
     next(err);
@@ -31,6 +31,7 @@ module.exports.createArticle = async (req, res, next) => {
         source: newArticle.source,
         image: newArticle.image,
         link: newArticle.link,
+        _id: newArticle._id,
       });
     }
   } catch (err) {
