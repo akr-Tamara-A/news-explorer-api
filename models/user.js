@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: [2, 'Слишком короткое название'],
     maxlength: [30, 'Слишком длинное название'],
-    required: [true, 'Обязательное поле'],
+    required: false,
   },
   email: {
     type: String,

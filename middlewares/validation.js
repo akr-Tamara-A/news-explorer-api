@@ -15,10 +15,8 @@ const userValidation = celebrate({
         'string.empty': 'Поле "password" не должно быть пустым',
         'string.min': 'Минимальная длина поля "password" - 8 символов',
       }),
-    name: Joi.string().required().min(2).max(30)
+    name: Joi.string().min(2).max(30)
       .messages({
-        'any.required': 'Поле "name" должно быть заполнено',
-        'string.empty': 'Поле "name" не должно быть пустым',
         'string.min': 'Минимальная длина поля "name" - 2 символа',
         'string.max': 'Максимальная длина поля "name" - 30 символов',
       }),
